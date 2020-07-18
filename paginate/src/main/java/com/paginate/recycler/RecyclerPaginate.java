@@ -26,7 +26,7 @@ public final class RecyclerPaginate extends Paginate {
         this.loadingTriggerThreshold = loadingTriggerThreshold;
 
         // Attach scrolling listener in order to perform end offset check on each scroll event
-        recyclerView.addOnScrollListener(mOnScrollListener);
+        recyclerView.getViewTreeObserver().addOnScrollChangedListener(mOnScrollListener);
 
         if (addLoadingListItem) {
             // Wrap existing adapter with new adapter that will add loading row
@@ -59,7 +59,7 @@ public final class RecyclerPaginate extends Paginate {
 
     @Override
     public void unbind() {
-        recyclerView.removeOnScrollListener(mOnScrollListener);   // Remove scroll listener
+        recyclerView.getViewTreeObserver().removeOnScrollChangedListener(mOnScrollListener);   // Remove scroll listener
         if (recyclerView.getAdapter() instanceof WrapperAdapter) {
             WrapperAdapter wrapperAdapter = (WrapperAdapter) recyclerView.getAdapter();
             RecyclerView.Adapter adapter = wrapperAdapter.getWrappedAdapter();
@@ -106,9 +106,9 @@ public final class RecyclerPaginate extends Paginate {
         checkEndOffset();
     }
 
-    private final RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
+    private final ViewTreeObserver.OnScrollChangedListener mOnScrollListener = new OnScrollChangedListener() {
         @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        public void onScrollChanged() {
             checkEndOffset(); // Each time when list is scrolled check if end of the list is reached
         }
     };
